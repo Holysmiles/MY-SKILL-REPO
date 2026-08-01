@@ -1,0 +1,4 @@
+interface:
+  display_name: "第一性原理论文分析"
+  short_description: "从第一性原理严谨拆解论文任务、方法、张量维度、公式机制与消融证据"
+  default_prompt: "Use $analyze-research-paper to analyze the provided paper from first principles in Chinese."
