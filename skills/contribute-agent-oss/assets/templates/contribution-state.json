@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "phase": "intake",
+  "completion_state": null,
+  "created_at": null,
+  "updated_at": null,
+  "profile": {
+    "objective": null,
+    "tech_stack": [],
+    "experience": null,
+    "timebox_days": 14,
+    "constraints": []
+  },
+  "target": {
+    "repository": null,
+    "local_path": null,
+    "base_branch": null,
+    "issue_url": null,
+    "direction": null
+  },
+  "alignment": {
+    "status": "not-evaluated",
+    "reason": null,
+    "evidence_url": null
+  },
+  "baseline": {
+    "commit": null,
+    "command": null,
+    "exit_code": null,
+    "result": null,
+    "evidence_path": null
+  },
+  "interface_checkpoint": {
+    "status": "not-evaluated",
+    "reason": null,
+    "evidence_path": null
+  },
+  "verification": {
+    "status": "not-run",
+    "commands": [],
+    "evidence_path": null
+  },
+  "external_actions": [],
+  "pull_request": {
+    "url": null,
+    "state": "not-created",
+    "created_at": null,
+    "last_human_activity_at": null,
+    "last_follow_up_at": null
+  },
+  "artifacts": {},
+  "history": []
+}

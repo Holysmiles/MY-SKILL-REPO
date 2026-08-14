@@ -7,6 +7,7 @@
 | Skill | 功能 | 文档 |
 |---|---|---|
 | [`analyze-research-paper`](skills/analyze-research-paper) | 从第一性原理分析论文，覆盖任务、挑战、insight、novelty、方法流程、张量维度、公式、训练/推理和消融实验 | [详细说明](docs/analyze-research-paper.md) |
+| [`contribute-agent-oss`](skills/contribute-agent-oss) | 用证据门禁完成 AI Agent 开源项目筛选、Issue 与七维架构分析、方案对齐、实现验证、PR/review 跟进和面试叙事 | [Skill 说明](skills/contribute-agent-oss/SKILL.md) |
 
 ## 安装
 
@@ -23,6 +24,7 @@ PowerShell：
 
 ```powershell
 Copy-Item -Recurse .\skills\analyze-research-paper "$env:USERPROFILE\.codex\skills\"
+Copy-Item -Recurse .\skills\contribute-agent-oss "$env:USERPROFILE\.codex\skills\"
 ```
 
 macOS/Linux：
@@ -30,11 +32,17 @@ macOS/Linux：
 ```bash
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R skills/analyze-research-paper "${CODEX_HOME:-$HOME/.codex}/skills/"
+cp -R skills/contribute-agent-oss "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
 安装后刷新 Skill 列表或新建 Codex 会话。
 
 ## 快速使用
+
+```text
+$contribute-agent-oss 请帮我筛选一个活跃的 AI Agent 开源项目，
+找出可在两周内完成的贡献方向，并从分析和方案设计开始推进。
+```
 
 ```text
 $analyze-research-paper 请分析我提供的论文，重点解释 Methodology、

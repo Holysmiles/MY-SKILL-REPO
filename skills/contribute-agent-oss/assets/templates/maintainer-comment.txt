@@ -1,0 +1,7 @@
+Hi maintainers,
+
+I noticed {{REQUIRED:objective_problem_with_issue_or_code_reference}}.
+
+I am considering {{REQUIRED:concise_solution_direction}} while keeping {{REQUIRED:scope_or_compatibility_constraint}} unchanged. Would this be a contribution you would be interested in accepting, or is there an existing plan I should align with?
+
+Thanks!

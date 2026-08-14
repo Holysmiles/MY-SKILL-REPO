@@ -1,0 +1,4 @@
+interface:
+  display_name: "Contribute to AI Agent OSS"
+  short_description: "Take an AI Agent contribution from discovery to review"
+  default_prompt: "Use $contribute-agent-oss to find and complete an evidence-backed AI Agent open-source contribution."
