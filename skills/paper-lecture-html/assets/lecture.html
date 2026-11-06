@@ -57,6 +57,19 @@ figure { margin:28px 0; }
 figcaption { color:var(--muted); font-size:13px; line-height:1.7; margin-top:11px; }
 .annotations { list-style:none; padding:0; font-size:14px; }
 .annotations b { color:var(--teal); padding-right:6px; }
+.step-overlay { position:absolute; inset:0; pointer-events:none; }
+.step-overlay .pin { pointer-events:auto; }
+.walkthrough { border:1px solid var(--line); border-radius:14px; padding:18px; margin:28px 0; background:var(--panel); }
+.walkthrough figure { margin:0 0 18px; }
+.step-tabs { display:flex; flex-wrap:wrap; gap:7px; }
+.step-tab { font-size:13px; padding:7px 10px; }
+.step-tab[aria-pressed="true"] { color:var(--teal); background:var(--tint); border-color:var(--teal); }
+.step-controls { display:flex; gap:16px; align-items:center; margin:16px 0; }
+.step-controls button { font-size:13px; }
+.step-status { color:var(--muted); font-size:13px; }
+button:disabled { opacity:.45; cursor:default; }
+.step-panel h3 { font-size:19px; margin:17px 0 10px; }
+.step-panel .equation { margin-top:16px; }
 .table-wrap { overflow-x:auto; margin:24px 0; }
 table { width:100%; border-collapse:collapse; font-size:14px; background:var(--panel); }
 caption { text-align:left; padding:10px 0; font-weight:700; }
@@ -70,6 +83,7 @@ summary { cursor:pointer; color:var(--teal); }
 footer { font-size:12px; color:var(--muted); margin-top:65px; padding-top:22px; border-top:1px solid var(--line); }
 @media(max-width:800px) { .layout { display:block; } .sidebar { position:static; width:100%; height:auto; padding:20px; border-right:0; border-bottom:1px solid var(--line); } .sidebar nav { display:flex; overflow:auto; margin:14px 0 0; } .sidebar nav a { min-width:150px; } .tools { margin-top:12px; } .main { padding:30px 20px 50px; } h2 { font-size:24px; } body { font-size:16px; } }
 @media print { .sidebar,.tools,.math-source,.figure-open,.image-viewer { display:none; } .layout { display:block; } body { background:white; color:#172d2d; } .main { padding:0; } .lecture-section { break-before:auto; } figure,.equation,tr { break-inside:avoid; } details { display:block; } }
+@media print { .step-tabs,.step-controls,.step-overlay { display:none !important; } .step-panel[hidden] { display:block; } .step-panel { border-top:1px solid #ccc; margin-top:20px; } }
 {{MATH_CSS}}
 </style>
 </head>
@@ -86,6 +100,22 @@ document.querySelectorAll('[data-tex]').forEach(element => {
 });
 document.getElementById('theme').addEventListener('click', () => document.body.classList.toggle('dark'));
 document.getElementById('print').addEventListener('click', () => window.print());
+document.querySelectorAll('.walkthrough').forEach(walkthrough => {
+  const panels = [...walkthrough.querySelectorAll(':scope > .step-panel')];
+  const choose = index => {
+    if (index < 0 || index >= panels.length) return;
+    walkthrough.dataset.current = index;
+    panels.forEach((panel, i) => { panel.hidden = i !== index; });
+    walkthrough.querySelectorAll('.step-overlay').forEach((overlay, i) => { overlay.hidden = i !== index; });
+    walkthrough.querySelectorAll('.step-tab').forEach((tab, i) => tab.setAttribute('aria-pressed', String(i === index)));
+    walkthrough.querySelector('.step-prev').disabled = index === 0;
+    walkthrough.querySelector('.step-next').disabled = index === panels.length - 1;
+    walkthrough.querySelector('.step-status').textContent = `${index + 1} / ${panels.length}`;
+  };
+  walkthrough.querySelectorAll('.step-tab').forEach(tab => tab.addEventListener('click', () => choose(Number(tab.dataset.step))));
+  walkthrough.querySelector('.step-prev').addEventListener('click', () => choose(Number(walkthrough.dataset.current) - 1));
+  walkthrough.querySelector('.step-next').addEventListener('click', () => choose(Number(walkthrough.dataset.current) + 1));
+});
 document.querySelectorAll('.figure-open').forEach(button => {
   button.addEventListener('click', () => {
     const artwork = button.closest('.figure-image').cloneNode(true);

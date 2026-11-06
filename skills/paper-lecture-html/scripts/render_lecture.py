@@ -8,6 +8,7 @@ import mimetypes
 from pathlib import Path
 import re
 import sys
+from urllib.parse import urlsplit
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +20,28 @@ def escape(value):
 
 def source_note(block):
     source = block.get('source')
-    return f'<p class="source">{escape(source)}</p>' if source else ''
+    parts = [escape(source)] if source else []
+    for citation in block.get('citations', []):
+        url = citation['url']
+        parsed = urlsplit(url)
+        if parsed.scheme not in {'https', 'http'} or not parsed.netloc:
+            raise ValueError('Citation URLs must be absolute HTTP(S) links')
+        parts.append(f'<a href="{escape(url)}" target="_blank" rel="noopener noreferrer">{escape(citation["label"])}</a>')
+    return f'<p class="source">{" · ".join(parts)}</p>' if parts else ''
+
+
+def annotations(marks):
+    pins, notes = [], []
+    for mark in marks:
+        x, y = float(mark['x']), float(mark['y'])
+        if not (0 <= x <= 100 and 0 <= y <= 100):
+            raise ValueError('Figure annotation coordinates must be percentages from 0 to 100')
+        pins.append(
+            f'<span class="pin" style="left:{x}%;top:{y}%" '
+            f'title="{escape(mark["text"])}">{escape(mark["label"])}</span>'
+        )
+        notes.append(f'<li><b>{escape(mark["label"])}</b> {escape(mark["text"])}</li>')
+    return ''.join(pins), ''.join(notes)
 
 
 def embed_image(path):
@@ -53,23 +75,40 @@ def render_block(block, base_dir):
     elif kind == 'figure':
         image_path = (base_dir / block['src']).resolve()
         image_uri = embed_image(image_path)
-        pins = []
-        notes = []
-        for mark in block.get('marks', []):
-            x, y = float(mark['x']), float(mark['y'])
-            if not (0 <= x <= 100 and 0 <= y <= 100):
-                raise ValueError('Figure annotation coordinates must be percentages from 0 to 100')
-            pins.append(
-                f'<span class="pin" style="left:{x}%;top:{y}%" '
-                f'title="{escape(mark["text"])}">{escape(mark["label"])}</span>'
-            )
-            notes.append(f'<li><b>{escape(mark["label"])}</b> {escape(mark["text"])}</li>')
+        pins, notes = annotations(block.get('marks', []))
         content = (
             f'<figure><div class="figure-image"><img src="{image_uri}" '
-            f'alt="{escape(block["alt"])}">{"".join(pins)}'
+            f'alt="{escape(block["alt"])}">{pins}'
             f'<button type="button" class="figure-open">放大图片</button></div>'
             f'<figcaption>{escape(block["caption"])}</figcaption>'
-            f'<ul class="annotations">{"".join(notes)}</ul></figure>'
+            f'<ul class="annotations">{notes}</ul></figure>'
+        )
+    elif kind == 'walkthrough':
+        steps = block['steps']
+        if not steps:
+            raise ValueError('A walkthrough needs at least one step')
+        image_uri = embed_image((base_dir / block['src']).resolve())
+        overlays, panels, tabs = [], [], []
+        for index, step in enumerate(steps):
+            pins, notes = annotations(step.get('marks', []))
+            hidden = ' hidden' if index else ''
+            overlays.append(f'<div class="step-overlay" data-step="{index}"{hidden}>{pins}</div>')
+            tabs.append(f'<button type="button" class="step-tab" data-step="{index}" aria-pressed="{"false" if index else "true"}">{index+1}. {escape(step["title"])}</button>')
+            inner = ''.join(render_block(child, base_dir) for child in step['blocks'])
+            panels.append(
+                f'<div class="step-panel" data-step="{index}"{hidden}><h3>{index+1}. {escape(step["title"])}</h3>'
+                f'<ul class="annotations">{notes}</ul>{inner}{source_note(step)}</div>'
+            )
+        content = (
+            f'<div class="walkthrough" data-current="0"><figure><div class="figure-image">'
+            f'<img src="{image_uri}" alt="{escape(block["alt"])}">{"".join(overlays)}'
+            f'<button type="button" class="figure-open">放大图片</button></div>'
+            f'<figcaption>{escape(block["caption"])}</figcaption></figure>'
+            f'<div class="step-tabs" role="group" aria-label="选择读图步骤">{"".join(tabs)}</div>'
+            f'<div class="step-controls"><button type="button" class="step-prev" disabled>上一步</button>'
+            f'<span class="step-status" aria-live="polite">1 / {len(steps)}</span>'
+            f'<button type="button" class="step-next"{" disabled" if len(steps)==1 else ""}>下一步</button></div>'
+            f'{"".join(panels)}</div>'
         )
     elif kind == 'table':
         columns, rows = block['columns'], block['rows']

@@ -17,6 +17,7 @@ UTF-8 JSON 包含 `title`、`subtitle`、`audience`、`source`、`sections`。�
 | list | items | source |
 | equation | latex、meaning | source |
 | figure | src、alt、caption | source、marks |
+| walkthrough | src、alt、caption、steps | source、citations |
 | table | columns、rows | caption、source |
 | flow | steps | caption、source |
 | details | summary、blocks | |
@@ -27,7 +28,36 @@ figure 的 src 是相对 JSON 目录或绝对路径的本地 PNG、JPEG、WebP�
 
 table 的每行长度应与 columns 一致。flow 的 steps 是按信息流排列的字符串列表。details 包含同样的正文块，用于额外推导和术语补充。
 
-每个 source 是紧邻内容显示的论文定位，如“论文 §3.1，Figure 2”。来源状态可以写入 source 或相应证据提示。教学示例在标题或正文中清楚注明。
+每个 source 是紧邻内容显示的论文定位，如“论文 v2 §3.1，Figure 2”。所有正文块也可带 citations 数组，每项含 label 与绝对 HTTP(S) url，生成可点击链接。外部引用不在打开页面时自动加载，正文、图片和公式仍可离线阅读。来源状态可以写入 source 或相应证据提示。教学示例在标题或正文中清楚注明。
+
+## 同图分步讲解
+
+复杂架构或需要逐步指向的图使用 walkthrough。steps 是非空列表。每步含 title、blocks，可含 marks、source 和 citations。marks 格式与 figure 相同，只显示当前步骤的编号；blocks 使用 paragraph、equation、callout、list、table 或 details。避免嵌套 walkthrough。每步解决一个问题，正文能解释图中编号所指之处。
+
+```json
+{
+  "type": "walkthrough",
+  "src": "assets/model.png",
+  "alt": "论文模型架构图",
+  "caption": "原论文架构图，中文编号由讲解者添加",
+  "source": "所读版本、章节与真实图号",
+  "citations": [{"label": "打开原论文", "url": "https://example.org/paper.pdf#page=3"}],
+  "steps": [
+    {
+      "title": "输入如何成为表示",
+      "marks": [{"x": 30, "y": 75, "label": "1", "text": "当前输入的位置，坐标需按实际图像校准"}],
+      "blocks": [{"type": "paragraph", "text": "以论文真实内容写出这一步的连续讲解。"}]
+    },
+    {
+      "title": "表示在哪里交互",
+      "marks": [{"x": 55, "y": 40, "label": "2", "text": "当前交互模块，坐标需按实际图像校准"}],
+      "blocks": [{"type": "paragraph", "text": "解释本步如何承接上一步，以及输出送往哪里。"}]
+    }
+  ]
+}
+```
+
+页面提供步骤按钮、上一步/下一步、状态提示和图片放大。打印时展示全部步骤正文，隐藏会相互遮挡的图上编号，保留各步文字注释。数值例子先在段落里声明配置；不能把示例值伪装成论文默认设置。
 
 ## 最小输入
 
@@ -56,6 +86,6 @@ table 的每行长度应与 columns 一致。flow 的 steps 是按信息流排�
 
 ## 页面验收
 
-检查单文件 HTML 在桌面和约 390 像素宽度下可读。长表格可水平滚动，公式具有溢出容器，图片按比例缩放。用浏览器打开后检查公式渲染错误、图片自然尺寸、导航、折叠、主题切换和打印布局。
+检查单文件 HTML 在桌面和约 390 像素宽度下可读。长表格可水平滚动，公式具有溢出容器，图片按比例缩放。用浏览器打开后检查公式渲染错误、图片自然尺寸、导航、折叠、主题切换和打印布局。含 walkthrough 时逐步点击，确认图上编号、步骤正文、进度、首尾禁用状态同步，放大图保留当前注释，打印包含全部步骤。
 
 输出包含连续正文与实际图片。图片取得失败时将缺口写明。HTML 文件内嵌字体、脚本和图片，正文与公式可离线读取。PDF 页面或图表截图中的字体仍按原图呈现。
