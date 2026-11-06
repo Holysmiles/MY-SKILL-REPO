@@ -1,0 +1,4 @@
+interface:
+  display_name: "论文图文精讲"
+  short_description: "借鉴参考音频的提问、读图与维度追踪方式，生成有论文依据的中文 HTML 精讲"
+  default_prompt: "请用 $paper-lecture-html 讲解我提供的论文，解释设计理由、关键公式和实验，并输出带图片与中文注释的 HTML。"

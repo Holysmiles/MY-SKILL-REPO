@@ -8,6 +8,7 @@
 |---|---|---|
 | [`analyze-research-paper`](skills/analyze-research-paper) | 从第一性原理分析论文，覆盖任务、挑战、insight、novelty、方法流程、张量维度、公式、训练/推理和消融实验 | [详细说明](docs/analyze-research-paper.md) |
 | [`contribute-agent-oss`](skills/contribute-agent-oss) | 用证据门禁完成 AI Agent 开源项目筛选、Issue 与七维架构分析、方案对齐、实现验证、PR/review 跟进和面试叙事 | [Skill 说明](skills/contribute-agent-oss/SKILL.md) |
+| [`paper-lecture-html`](skills/paper-lecture-html) | 根据论文制作带原图、中文注释与公式的 HTML 图文精讲 | [Skill 说明](skills/paper-lecture-html/SKILL.md) |
 
 ## 安装
 
@@ -25,6 +26,7 @@ PowerShell：
 ```powershell
 Copy-Item -Recurse .\skills\analyze-research-paper "$env:USERPROFILE\.codex\skills\"
 Copy-Item -Recurse .\skills\contribute-agent-oss "$env:USERPROFILE\.codex\skills\"
+Copy-Item -Recurse .\skills\paper-lecture-html "$env:USERPROFILE\.codex\skills\"
 ```
 
 macOS/Linux：
@@ -33,11 +35,16 @@ macOS/Linux：
 mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
 cp -R skills/analyze-research-paper "${CODEX_HOME:-$HOME/.codex}/skills/"
 cp -R skills/contribute-agent-oss "${CODEX_HOME:-$HOME/.codex}/skills/"
+cp -R skills/paper-lecture-html "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
 安装后刷新 Skill 列表或新建 Codex 会话。
 
 ## 快速使用
+
+```text
+$paper-lecture-html 请精讲我提供的论文，结合原图、公式与实验，生成中文 HTML 讲稿。
+```
 
 ```text
 $contribute-agent-oss 请帮我筛选一个活跃的 AI Agent 开源项目，

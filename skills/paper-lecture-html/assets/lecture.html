@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{{TITLE}}</title>
+<style>
+:root { --paper:#f6f4ef; --panel:#ffffff; --ink:#1d3435; --muted:#617272; --line:#dce2db; --teal:#106a61; --tint:#eaf3ed; --amber:#8a5718; --shadow:0 12px 44px #193b3010; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; scroll-padding-top:30px; }
+body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.9 "Segoe UI","Microsoft YaHei",sans-serif; }
+body.dark { --paper:#152322; --panel:#1e302e; --ink:#e0e9e3; --muted:#a7bab1; --line:#3a514c; --teal:#88d3bd; --tint:#273e36; --amber:#f5c47e; }
+a { color:var(--teal); }
+button { font:inherit; cursor:pointer; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:7px 12px; }
+button:focus-visible,a:focus-visible,summary:focus-visible { outline:3px solid var(--teal); outline-offset:3px; }
+.layout { display:grid; grid-template-columns:265px minmax(0,1fr); max-width:1440px; margin:auto; }
+.sidebar { position:sticky; top:0; height:100vh; padding:40px 24px; overflow:auto; border-right:1px solid var(--line); }
+.brand { letter-spacing:.14em; color:var(--teal); font-size:14px; font-weight:700; }
+.sidebar nav { margin-top:32px; }
+.sidebar nav a { display:flex; gap:10px; margin:9px 0; padding:8px 10px; text-decoration:none; font-size:14px; line-height:1.65; color:var(--muted); border-left:2px solid transparent; }
+.sidebar nav a.active { color:var(--teal); border-color:var(--teal); background:var(--tint); }
+.sidebar nav span { font-variant-numeric:tabular-nums; opacity:.65; }
+.tools { display:flex; flex-wrap:wrap; gap:8px; margin-top:26px; }
+.tools button { font-size:12px; }
+.main { min-width:0; padding:56px clamp(22px,5vw,80px) 80px; }
+header { padding-bottom:38px; border-bottom:1px solid var(--line); }
+.eyebrow { margin:0 0 14px; font-size:12px; letter-spacing:.15em; color:var(--teal); }
+h1 { font-size:clamp(29px,3.4vw,45px); line-height:1.35; letter-spacing:-.035em; margin:0 0 20px; }
+.subtitle { font-size:19px; color:var(--muted); }
+.metadata { color:var(--muted); font-size:13px; margin:9px 0; }
+.lecture-section { position:relative; margin-top:52px; }
+.section-number { color:var(--teal); font-size:13px; letter-spacing:.12em; }
+h2 { font-size:27px; line-height:1.45; margin:7px 0 15px; }
+.section-question { color:var(--muted); font-size:18px; margin-bottom:28px; }
+p { margin:16px 0; overflow-wrap:anywhere; }
+.callout { border-left:3px solid var(--teal); background:var(--tint); padding:17px 22px; margin:26px 0; border-radius:0 10px 10px 0; }
+.callout strong { font-size:14px; color:var(--teal); }
+.callout p { margin:5px 0; }
+.callout.caution { border-color:var(--amber); }
+.callout.caution strong { color:var(--amber); }
+.callout.question { background:var(--panel); box-shadow:var(--shadow); }
+.source { font-size:12px; line-height:1.7; color:var(--muted); margin:9px 0 23px; }
+.equation { overflow:auto; background:var(--panel); padding:18px; border:1px solid var(--line); border-radius:12px; margin-top:25px; }
+.meaning { margin:13px 0; }
+.math-source { font-size:12px; color:var(--muted); }
+pre { white-space:pre-wrap; overflow-wrap:anywhere; }
+figure { margin:28px 0; }
+.figure-image { position:relative; line-height:0; background:#fff; border:1px solid var(--line); border-radius:12px; }
+.figure-image img { width:100%; height:auto; border-radius:12px; }
+.figure-open { position:absolute; right:8px; bottom:8px; padding:4px 9px; font-size:11px; line-height:1.6; background:#fff; color:#183d3b; }
+.image-viewer { max-width:96vw; width:1250px; max-height:94vh; padding:18px; border:1px solid var(--line); border-radius:12px; background:var(--panel); color:var(--ink); }
+.image-viewer::backdrop { background:#102525bb; }
+.zoom-content { overflow:auto; max-height:80vh; margin-top:12px; }
+.zoom-content .figure-image { width:max(900px,100%); }
+.pin { position:absolute; transform:translate(-50%,-50%); display:grid; place-items:center; min-width:27px; height:27px; padding:0 5px; color:#fff; background:#106a61; border:2px solid #fff; border-radius:50%; font:700 12px/1 sans-serif; box-shadow:0 2px 7px #0003; }
+figcaption { color:var(--muted); font-size:13px; line-height:1.7; margin-top:11px; }
+.annotations { list-style:none; padding:0; font-size:14px; }
+.annotations b { color:var(--teal); padding-right:6px; }
+.table-wrap { overflow-x:auto; margin:24px 0; }
+table { width:100%; border-collapse:collapse; font-size:14px; background:var(--panel); }
+caption { text-align:left; padding:10px 0; font-weight:700; }
+th,td { text-align:left; vertical-align:top; padding:13px 15px; border-bottom:1px solid var(--line); min-width:110px; }
+th { color:var(--teal); background:var(--tint); }
+.flow { display:flex; flex-wrap:wrap; gap:14px; list-style:none; padding:0; margin:28px 0; }
+.flow li { flex:1; min-width:125px; padding:15px; background:var(--panel); border:1px solid var(--line); border-radius:10px; font-size:14px; }
+.flow li+li::before { content:"→ "; color:var(--teal); }
+.derivation { border:1px solid var(--line); border-radius:10px; padding:16px 20px; margin:24px 0; }
+summary { cursor:pointer; color:var(--teal); }
+footer { font-size:12px; color:var(--muted); margin-top:65px; padding-top:22px; border-top:1px solid var(--line); }
+@media(max-width:800px) { .layout { display:block; } .sidebar { position:static; width:100%; height:auto; padding:20px; border-right:0; border-bottom:1px solid var(--line); } .sidebar nav { display:flex; overflow:auto; margin:14px 0 0; } .sidebar nav a { min-width:150px; } .tools { margin-top:12px; } .main { padding:30px 20px 50px; } h2 { font-size:24px; } body { font-size:16px; } }
+@media print { .sidebar,.tools,.math-source,.figure-open,.image-viewer { display:none; } .layout { display:block; } body { background:white; color:#172d2d; } .main { padding:0; } .lecture-section { break-before:auto; } figure,.equation,tr { break-inside:avoid; } details { display:block; } }
+{{MATH_CSS}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar"><div class="brand">论文图文精讲</div><nav aria-label="讲解目录">{{NAVIGATION}}</nav><div class="tools"><button id="theme" type="button">切换明暗</button><button id="expand" type="button">展开推导</button><button id="print" type="button">打印</button></div></aside>
+<main class="main"><header><p class="eyebrow">问题 · 机制 · 证据</p><h1>{{TITLE}}</h1><p class="subtitle">{{SUBTITLE}}</p><p class="metadata">{{AUDIENCE}}</p><p class="metadata">{{SOURCE}}</p></header>{{SECTIONS}}<footer>通过相邻段落的来源定位核对关键结论。</footer></main>
+</div>
+<dialog id="image-viewer" class="image-viewer" aria-label="图片放大视图"><button id="close-image" type="button">关闭图片</button><div class="zoom-content"></div></dialog>
+<script>{{MATH_SCRIPT}}</script>
+<script>
+document.querySelectorAll('[data-tex]').forEach(element => {
+  katex.render(element.dataset.tex, element, { displayMode:true, throwOnError:false, trust:false, strict:'warn' });
+});
+document.getElementById('theme').addEventListener('click', () => document.body.classList.toggle('dark'));
+document.getElementById('print').addEventListener('click', () => window.print());
+document.querySelectorAll('.figure-open').forEach(button => {
+  button.addEventListener('click', () => {
+    const artwork = button.closest('.figure-image').cloneNode(true);
+    artwork.querySelector('.figure-open').remove();
+    document.querySelector('.zoom-content').replaceChildren(artwork);
+    document.getElementById('image-viewer').showModal();
+  });
+});
+document.getElementById('close-image').addEventListener('click', () => document.getElementById('image-viewer').close());
+document.getElementById('expand').addEventListener('click', event => {
+  const shouldOpen = [...document.querySelectorAll('.derivation')].some(element => !element.open);
+  document.querySelectorAll('.derivation').forEach(element => { element.open = shouldOpen; });
+  event.currentTarget.textContent = shouldOpen ? '收起推导' : '展开推导';
+});
+const observer = new IntersectionObserver(entries => {
+  entries.filter(entry => entry.isIntersecting).forEach(entry => {
+    document.querySelectorAll('nav a').forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+    });
+  });
+}, { rootMargin:'-5% 0px -70% 0px' });
+document.querySelectorAll('.lecture-section').forEach(section => observer.observe(section));
+</script>
+</body>
+</html>
