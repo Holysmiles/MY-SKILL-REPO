@@ -1,4 +1,4 @@
 interface:
   display_name: "论文图文精讲"
-  short_description: "借鉴视频中的问题推进、附录求证与维度推演，生成带原图分步注释的中文 HTML 精讲"
-  default_prompt: "请用 $paper-lecture-html 讲解我提供的论文，沿原图分步解释机制，核对设计替代方案与实验证据，输出带中文注释的 HTML。"
+  short_description: "用三遍阅读核对论文，为初学者生成逐图逐式、论证可追溯的中文 Review HTML"
+  default_prompt: "请用 $paper-lecture-html 精读我提供的论文，先用图解和问答讲给初学者，再对照前作与创新，逐图逐式说明证据，生成中文 Review 版 HTML。"
